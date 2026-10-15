@@ -3,33 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberShield - Live Data Breach & Leak Scanner</title>
+  <title>BreachDetector - Data Leak Checker</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
-      --danger: #ef4444;
-      --danger-bg: #450a0a;
-      --success: #10b981;
-      --success-bg: #022c22;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
+      --bg: #0d1117;
+      --card: #161b22;
+      --accent: #58a6ff;
+      --accent-hover: #1f6feb;
+      --danger: #f85149;
+      --danger-bg: rgba(248, 81, 73, 0.1);
+      --success: #3fb950;
+      --success-bg: rgba(63, 185, 80, 0.1);
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --border: #30363d;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding: 1.5rem; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
 
-    .container { width: 100%; max-width: 680px; margin-top: 2rem; }
+    .container { width: 100%; max-width: 650px; margin-top: 2rem; }
     
     .header { text-align: center; margin-bottom: 2rem; }
-    .header h1 { font-size: 2rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    .header h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
     .header h1 span { color: var(--accent); }
     .header p { color: var(--text-muted); font-size: 0.95rem; }
 
-    .search-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); }
+    .search-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
     
     .input-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
     @media (min-width: 480px) {
@@ -42,7 +42,7 @@
       border-radius: 8px;
       border: 1px solid var(--border);
       background-color: var(--bg);
-      color: var(--text);
+      color: #fff;
       font-size: 1rem;
       outline: none;
     }
@@ -59,24 +59,20 @@
       font-size: 1rem;
       transition: background 0.2s;
     }
-    button.btn-search:hover { background-color: var(--accent-hover); }
+    button.btn-search:hover { background-color: var(--accent-hover); color: #fff; }
 
     .privacy-notice { text-align: center; font-size: 0.8rem; color: var(--text-muted); }
 
     #results { margin-top: 1.5rem; display: none; }
     
     .status-banner { padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem; }
-    .status-banner.pwned { background: var(--danger-bg); border: 1px solid var(--danger); color: #fca5a5; }
-    .status-banner.clean { background: var(--success-bg); border: 1px solid var(--success); color: #6ee7b7; }
+    .status-banner.pwned { background: var(--danger-bg); border: 1px solid var(--danger); color: var(--danger); }
+    .status-banner.clean { background: var(--success-bg); border: 1px solid var(--success); color: var(--success); }
 
     .breach-list { display: flex; flex-direction: column; gap: 1rem; }
-    .breach-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; }
-    .breach-card h3 { color: var(--text); font-size: 1.1rem; margin-bottom: 0.25rem; }
-    .breach-card .domain { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.5rem; text-decoration: none; display: inline-block; }
-    .breach-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.75rem; }
-    
-    .data-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-    .tag { background: #334155; color: #cbd5e1; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+    .breach-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; }
+    .breach-card h3 { color: #fff; font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .breach-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin-top: 0.5rem; }
 
     .spinner { display: none; text-align: center; padding: 1.5rem 0; color: var(--accent); font-weight: 500; }
   </style>
@@ -85,21 +81,21 @@
 
   <div class="container">
     <div class="header">
-      <h1>Cyber<span>Shield</span></h1>
-      <p>Real-Time Data Breach & Credential Leak Detector</p>
+      <h1>Breach<span>Detector</span></h1>
+      <p>Check if an email address appeared in known public data breaches</p>
     </div>
 
     <div class="search-card">
       <form id="searchForm">
         <div class="input-group">
-          <input type="email" id="emailInput" placeholder="Enter email address (e.g. name@domain.com)" required>
-          <button type="submit" class="btn-search">Check Leaks</button>
+          <input type="email" id="emailInput" placeholder="Enter email address" required>
+          <button type="submit" class="btn-search">Check Email</button>
         </div>
       </form>
-      <p class="privacy-notice">🔒 Queries are sent directly to public breach databases via encrypted HTTPS requests.</p>
+      <p class="privacy-notice">🔒 Queries are sent directly to public security registries via HTTPS.</p>
     </div>
 
-    <div id="spinner" class="spinner">Scanning global data breach registries...</div>
+    <div id="spinner" class="spinner">Searching breach database...</div>
 
     <div id="results">
       <div id="statusBanner" class="status-banner"></div>
@@ -115,82 +111,4 @@
 
       const spinner = document.getElementById('spinner');
       const resultsDiv = document.getElementById('results');
-      const statusBanner = document.getElementById('statusBanner');
-      const breachList = document.getElementById('breachList');
-
-      spinner.style.display = 'block';
-      resultsDiv.style.display = 'none';
-      breachList.innerHTML = '';
-
-      try {
-        // Querying XposedOrNot Public API
-        const response = await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
-        
-        spinner.style.display = 'none';
-        resultsDiv.style.display = 'block';
-
-        if (response.status === 200) {
-          const data = await response.json();
-          
-          if (data.Error) {
-            // Clean account
-            statusBanner.className = 'status-banner clean';
-            statusBanner.innerHTML = '✅ Good news! No data breaches detected for this email address.';
-          } else if (data.breaches && data.breaches.length > 0) {
-            // Compromised account
-            const breaches = data.breaches[0]; // Returns list of breach names
-            statusBanner.className = 'status-banner pwned';
-            statusBanner.innerHTML = `⚠️ Danger! This email was found in ${breaches.length} data breach${breaches.length > 1 ? 'es' : ''}.`;
-
-            // Fetch detailed details for each breach found
-            const detailsResponse = await fetch('https://api.xposedornot.com/v1/breaches');
-            const allBreachesData = await detailsResponse.json();
-            
-            const breachMap = {};
-            if (allBreachesData && allBreachesData.exposedBreaches) {
-              allBreachesData.exposedBreaches.forEach(b => {
-                breachMap[b.name.toLowerCase()] = b;
-              });
-            }
-
-            breaches.forEach(breachName => {
-              const details = breachMap[breachName.toLowerCase()] || {
-                name: breachName,
-                domain: '',
-                description: 'Known security incident resulting in exposure of account record data.',
-                dataClasses: ['Account Info']
-              };
-
-              const card = document.createElement('div');
-              card.className = 'breach-card';
-              
-              const tagsHtml = (details.xposedData || details.dataClasses || ['Account Details'])
-                .map(item => `<span class="tag">${item}</span>`).join('');
-
-              card.innerHTML = `
-                <h3>${details.breachID || details.name}</h3>
-                ${details.domain ? `<a class="domain" href="http://${details.domain}" target="_blank">${details.domain}</a>` : ''}
-                <p>${details.exposureDescription || details.description || 'Breached database entry.'}</p>
-                <div class="data-tags">${tagsHtml}</div>
-              `;
-              breachList.appendChild(card);
-            });
-          }
-        } else if (response.status === 404) {
-          // 404 from XposedOrNot means no breaches found
-          statusBanner.className = 'status-banner clean';
-          statusBanner.innerHTML = '✅ Good news! No data breaches detected for this email address.';
-        } else {
-          statusBanner.className = 'status-banner clean';
-          statusBanner.innerHTML = '✅ No breaches found for this address.';
-        }
-      } catch (err) {
-        spinner.style.display = 'none';
-        resultsDiv.style.display = 'block';
-        statusBanner.className = 'status-banner clean';
-        statusBanner.innerHTML = '✅ No active leak records found for this query.';
-      }
-    });
-  </script>
-</body>
-</html>
+      const status
